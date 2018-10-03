@@ -1,0 +1,130 @@
+1.select first_name, hire_date, salary, ((salary*12)/4) from employees;
+
+2.select last_name,salary, ((salary*12)-((15*(12*salary))/100)) from employees;
+
+3.select first_name, hire_date, salary, ((salary*12)/4) as "Quarterly Salary" from employees;
+
+4.select last_name,salary, ((salary*12)-((15*(12*salary))/100))as "Net Take Home Saalry" from employees;
+
+5.select 'Employee '|| first_name ||' was hired on '|| hire_date || ' in Department '||department_id|| ' on monthly Salary '|| salary from employees;
+
+6.select distinct salary from employees;
+
+7.select * from customer_detail where customer_address = 'khar';
+
+8.select c.customer_name, b.branch_city,a.deposit_amount from customer_detail c 
+ inner join  account_detail a on a.customer_id=c.customer_id inner join bank_detail b on b.branch_id=a.branch_id where a.deposit_amount>5000;
+
+9. select customer_name from customer_detail where customer_name like 'S%';
+
+10. select * from bank_detail where branch_city in('Indore','Delhi','Pune');
+
+11. select branch_location from bank_detail where branch_city in('Delhi','Pune');
+
+12. select * from transaction_detail where amount between 4000 and 8000 and transaction_type='D';
+
+13. select customer_name from customer_detail order by customer_name desc;
+
+14. select c.customer_id, c.customer_name, c.customer_address ,a.account_id, a.branch_id ,a.account_type, a.deposit_amount, a.acc_open_date from 
+   customer_detail c inner join account_detail a on c.customer_id=a.customer_id order by a.deposit_amount desc;
+
+15. select a.account_id, a.branch_id ,a.account_type, a.deposit_amount, a.acc_open_date,t.amount from account_detail a 
+   inner join transaction_detail t on a.account_id=t.account_id order by t.amount asc ,a.acc_open_date desc;
+
+16. select * from customer_detail where customer_name like 'A%U%' or customer_name like 'S%U%';
+
+17. select INITCAP(customer_name), upper(customer_address) from customer_detail;
+
+18. select * from transaction_detail where to_char(transaction_date)<to_char((sysdate-5));
+
+19. select first_name, hire_date, trunc(sysdate-hire_date)as "No. Of days working", trunc((sysdate-hire_date)/7)as "No. Of weeks working",
+     trunc(months_between(sysdate,hire_date)) as "No. Of months working", trunc((sysdate-hire_date)/365)as "No. Of Years working" from employees;
+
+20. select employee_id, TO_CHAR(hire_date, 'fmYEAR, MONTH, dd, DAY') from employees;
+
+21. select location_id ,upper(substr(street_address,1,20)) from locations;
+
+22. select rpad(lpad(salary,10,'*'),15,'*') from employees;
+
+23. select first_name, salary, nvl(to_char(commission_pct) ,'Employee Earned No Commission') from employees;
+
+24. select first_name, commission_pct, nullif(commission_pct,1) from employees;
+
+25. select first_name, department_id,
+  case department_id
+  when 50 then 'HR Team'
+  when 80 then 'Training Team'
+  else 'Development Team'
+  end
+  from employees;
+
+26. select first_name, department_id,
+   decode( department_id,
+   50, 'HR Team',
+   80, 'Training Team',
+   'Development Team')
+    from employees;
+
+27 .select substr(c.customer_name,1,instr(c.customer_name,' '))as "Fist Name" , 
+   substr(c.customer_name,((instr(c.customer_name,' ',-1,1))+1),length(c.customer_name))as "Last Name",
+   b.branch_location,a.account_type,a.deposit_amount from customer_Detail c 
+   inner join account_detail a on c.customer_id=a.customer_id inner join bank_detail b on a.branch_id=b.branch_id where a.deposit_amount>5000 ;
+
+28. select c.customer_id,c.customer_name,a.account_id from customer_detail c left join account_detail a on c.customer_id=a.customer_id;
+
+29. select worker.first_name,worker.employee_id,worker.MANAGER_ID,worker.salary,manager.salary as "Managers  Salary",
+(manager.SALARY-worker.SALARY)as "Diffrence" from employees worker,employees manager where worker.MANAGER_ID=manager.EMPLOYEE_ID 
+order by worker.EMPLOYEE_ID;
+
+30. select e.employee_id,e.first_name||' '|| e.last_name as "Name",e.salary,d.department_name,l.city, l.postal_code from employees e
+inner join departments d on e.department_id=d.department_id inner join locations l on d.location_id=l.location_id where e.salary>5000 ;
+
+31. select count(customer_id) from account_detail where to_char(acc_open_date,'YYYY')='2004';
+
+32. select customer_name from  customer_detail where customer_id in
+   (select customer_id from account_detail having count(account_id)>=2 group by customer_id); 
+
+33. select c.customer_id,count(a.ACCOUNT_ID) from customer_detail c left outer join account_detail a on c.CUSTOMER_ID=a.CUSTOMER_ID 
+    group by c.CUSTOMER_ID order by c.CUSTOMER_ID;
+
+34. select c.customer_name,c.customer_address ,count(a.account_id) from CUSTOMER_DETAIL c,ACCOUNT_DETAIL a where c.CUSTOMER_ID=a.CUSTOMER_ID 
+    GROUP by c.CUSTOMER_name,c.CUSTOMER_ADDRESS ;
+
+35. select c.customer_name,t.transaction_type,count(transaction_id) from customer_detail c,transaction_detail t,account_detail a where 
+   c.customer_id=a.customer_id and a.account_id=t.account_id group by c.customer_name,t.transaction_type;
+
+36. SELECT c.customer_name,COUNT(t.transaction_id) FROM customer_detail c,transaction_detail t,account_detail a WHERE c.customer_id=a.customer_id
+  AND a.account_id   =t.account_id GROUP BY c.customer_name HAVING COUNT(t.transaction_id)= 
+  (SELECT MAX(COUNT(t2.transaction_id))FROM customer_detail c2,account_detail a2,transaction_detail t2 WHERE c2.customer_id=a2.customer_id 
+  AND a2.account_id   =t2.account_idGROUP BY c2.customer_id);
+
+37. select customer_id,account_id from account_detail group by customer_id,account_id order by customer_id;
+
+38. select customer_id,customer_name from customer_detail where customer_id 
+in(select customer_id from account_detail GROUP by customer_id having count(branch_id)>1);
+
+39. select TRANSACTION_ID,amount from transaction_detail where amount >(select avg(amount) from transaction_detail);
+
+40. select account_id,deposit_amount from account_detail where deposit_amount>(select min(amount) from transaction_detail);
+
+41. select account_id,max(amount) from transaction_detail GROUP BY account_id;
+
+42. select c.customer_name,b.branch_location,b.branch_city,a.DEPOSIT_AMOUNT from customer_detail c,bank_detail b,account_detail a 
+where a.BRANCH_ID=b.BRANCH_ID and  a.CUSTOMER_ID=c.CUSTOMER_ID and a.DEPOSIT_AMOUNT>
+(select DEPOSIT_AMOUNT from ACCOUNT_DETAIL where customer_id='C003') and a.BRANCH_ID
+in(select branch_id from account_detail where customer_id='C001');
+
+43. select customer_name,customer_id from customer_detail where customer_id not in('C002') and 
+customer_id in(select customer_id from account_detail where to_char(acc_open_date,'MM') 
+in(select to_char(acc_open_date,'MM') from account_detail where customer_id='C002') );
+
+44. select * from transaction_detail where TRANSACTION_TYPE in(select transaction_type from transaction_detail where account_id='A004');
+
+45. select branch_location ,branch_city from bank_detail where branch_id in(select BRANCH_ID from account_detail where customer_id='C001');
+
+46. select account_id,deposit_amount from account_detail where account_id in(select account_id from transaction_detail where amount>
+(select amount from transaction_detail where account_id='A005'));
+
+47. select * from account_detail where deposit_amount>(select avg(deposit_amount) from account_detail);
+
+48. select * from TRANSACTION_DETAIL where amount > any(select amount from transaction_detail where transaction_type='D')
