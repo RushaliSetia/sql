@@ -1,0 +1,240 @@
+answer 1:
+insert into account_details values('A006','C002','B005','R',14000,'13-05-10');
+
+Error starting at line : 2 in command -
+insert into account_details values('A006','C002','B005','R',14000,'13-05-10') 
+Error at Command Line : 2 Column : 13
+Error report -
+SQL Error: ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+
+answer 2:
+insert into customer_detail values('C006','Ankit','Hyderabad');
+
+answer 3:
+delete from customer_detail where customer_name='Ankit';
+
+answer 4:
+insert into account_detail values('A003','C007','B005','D',8100,'17-04-18');
+
+answer 5:
+delete from account_detail where account_id='A001';
+Error starting at line : 14 in command -
+delete from account_detail where account_id='A001'
+Error report -
+SQL Error: ORA-02292: integrity constraint (HR.SYS_C007005) violated - child record found
+02292. 00000 - "integrity constraint (%s.%s) violated - child record found"
+*Cause:    attempted to delete a parent key value that had a foreign
+           dependency.
+*Action:   delete dependencies first then parent or disable constraint.
+
+answer 6:
+insert into transcation_detail values('T009','N','A001',76000,'31-08-19');
+Error starting at line : 17 in command -
+insert into transcation_detail values('T009','N','A001',76000,'31-08-19') 
+Error at Command Line : 17 Column : 13
+Error report -
+SQL Error: ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+
+answer 7:
+create table account_details_backup as select * from account_detail;
+insert into account_details_backup values('A006','C005','B005','R',18000,'17-04-96');
+
+ANSWER 8:
+delete from transaction_detail where amount in (select min(amount) from transaction_detail);
+
+answer 9:
+update account_detail set deposit_amount=1000 where deposit_amount < avg(deposit_amount);
+
+answer 10:
+rollback * from account_detail
+where SUM(deposit_amount)>100000;
+
+answer 11:
+select employee_id,first_name,last_name,manager_id from employees where manager_id in(select manager_id from departments where manager_id is not null);
+
+answer 12:
+create table employ
+(
+   Id number primary key,
+   name varchar(20) not null,
+   rating int not null,
+   project char(20),
+   location varchar(20),
+   head varchar(35)
+);
+select * from employ;
+insert into employ values(101,'tom',10,'abc','noida','it_department');
+insert into employ values(102,'deepak',11,'def','delhi','cs_department');
+insert into employ values(103,'rushali',2,'xyz','gurugram','me_department');
+
+select name from employ where rating<(SELECT AVG(rating)
+                                      FROM employ);
+                                      
+answer 13:
+SELECT name
+FROM employ
+WHERE project= (SELECT project
+            FROM employ
+            Where name='tom');
+            
+answer 14:
+select name from employ
+where location=(select location from employ where head='it_department');
+    
+answer 15:
+drop table course;
+create table course(
+   course_id number PRIMARY KEY,
+   course_name varchar2(50)
+   
+);
+
+create table course_admin(
+    first_name varchar(30),
+    last_name varchar2(30),
+    course_id number, 
+    constraint cour_admin_fk foreign key(course_id) references course(course_id)
+); 
+insert into course values(1,'engineering');
+insert into course values(2,'medical');
+insert into course values(3,'ca');
+insert into course_admin values('deepak','sharma',1);
+insert into course_admin values('rushali','setia',2);
+select * from course;
+select * from course_admin;
+
+select cd.course_id,c.course_name,cd.first_name
+from course c,course_admin cd
+where c.course_id in(select course_id from course_admin);
+
+insert into course values(4,'database');
+insert into course_admin values(4,'dee','sharma');
+
+answer 16:
+select * 
+from course_admin
+where course_id=(select course_id from course where course_name='database');
+
+answer 17:
+create table student
+(
+name varchar2(30),
+std_id number primary key,
+marks number
+);
+
+insert into student values('deepak sharma',107100,90);
+insert into student values('rushali setia','107070',99);
+insert into student values('shivani nijhawan','107069',89);
+
+select * from student 
+where marks>(select avg(marks) from student);
+
+
+answer 18:
+select distinct d.department_name
+FROM EMployees e,departments d
+where e.DEPARTMENT_ID=d.DEPARTMENT_ID
+AND d.DEPARTMENT_ID IN (SELECT DEPARTMENT_ID
+                         FROM EMPLOYEES
+                         GROUP BY DEPARTMENT_ID
+                         HAVING COUNT(department_id)>3);
+                         
+answer 19:
+select e.salary+2000
+FROM EMPLOYEES e
+WHERE e.salary < ANY(SELECT AVG(salary)
+                 FROM EMPLOYEES
+                 GROUP BY department_id);
+                 
+answer 20:
+select DISTINCT b.branch_id
+FROM BANK_DETAIL b,ACCOUNT_DETAIL a
+where (SELECT MAX(COUNT(ad.branch_id))
+       FROM ACCOUNT_DETAIL ad
+       GROUP BY ad.branch_id )> 1
+AND b.branch_id=a.branch_id
+       ;
+
+answer 21:
+select Distinct c.customer_name
+FROM CUSTOMER_DETAIL c, ACCOUNT_DETAIL a
+WHERE c.CUSTOMER_ID=a.CUSTOMER_ID
+AND (Select MIN(COUNT(ad.customer_id))
+     FROM ACCOUNT_DETAIL ad
+     GROUP BY ad.customer_id)>0;
+     
+answer 22:
+create table ACCOUNT_DETAIL_NEW 
+as select * from ACCOUNT_DETAIL;
+
+
+answer 23:
+create table student_table(id number(10) PRIMARY KEY,name varchar2(30) NOT NULL,city varchar2(50) NOT NULL,course varchar2(30) default 'Foundation',registration_date date default sysdate,constraint city_cons check(city in('delhi','noida','gurgaon')));
+
+
+answer 24:
+desc customer_detail;
+
+answer 25:
+create table transaction_detail2 as select transaction_id,transaction_type from transaction_detail;
+
+answer 26:
+alter table customer_detail 
+modify(customer_name varchar2(50));
+
+answer 27:
+alter table customer_detail add Reference char(30);
+
+answer 28:
+alter table customer_detail drop column Reference;
+
+answer 29:
+alter table customer_detail 
+modify(customer_name varchar2(20));
+
+answer 30:
+rename Student_table to Student_Test_Table;
+
+answer 31:
+DELETE student_test_table;
+SELECT * FROM Student_test_table;
+Rollback;
+SELECT * FROM Student_Test_Table; 
+
+answer 32:
+desc ACCOUNT_DETAIL;
+
+select *
+FROM USER_CONS_COLUMNS
+WHERE table_name='account_detail';
+
+answer 33:
+alter table
+   ACCOUNT_DETAIL
+DISABLE constraint
+   SYS_C007000 CASCADE;
+
+answer 34:
+alter table 
+ACCOUNT_DETAIL 
+ENABLE CONSTRAINT 
+SYS_C007000;
+
+Answer 35:
+alter table account_detail_new
+add constraint ashi_goel
+foreign key(customer_id) 
+references account_detail_new(account_id); 
+alter table 
+ACCOUNT_DETAIL_NEW 
+DISABLE CONSTRAINT ashi_goel
+CASCADE;
+
+
