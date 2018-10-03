@@ -1,0 +1,144 @@
+1. insert into account_detail values('A006','C004','B004','R',500 ,'31-07-18');
+
+Error report -
+SQL Error: ORA-02290: check constraint (HR.CHK10019) violated
+02290. 00000 -  "check constraint (%s.%s) violated"
+*Cause:    The values being inserted do not satisfy the named check
+           
+*Action:   do not insert values that violate the constraint.
+
+2. insert into customer_detail values('C006','Ankit Todi','Noida');
+
+3. delete from CUSTOMER_DETAIL 
+   where customer_id='C006';
+
+4. insert into ACCOUNT_DETAIL values('A005','C002','B002','S',5000,'31-07-18');
+
+Error report -
+SQL Error: ORA-00001: unique constraint (HR.SYS_C007000) violated
+00001. 00000 -  "unique constraint (%s.%s) violated"
+*Cause:    An UPDATE or INSERT statement attempted to insert a duplicate key.
+           For Trusted Oracle configured in DBMS MAC mode, you may see
+           this message if a duplicate entry exists at a different level.
+*Action:   Either remove the unique restriction or do not insert the key.
+
+5. delete from ACCOUNT_DETAIL
+   where ACCOUNT_ID='A001';
+
+Error report -
+SQL Error: ORA-02292: integrity constraint (HR.SYS_C007005) violated - child record found
+02292. 00000 - "integrity constraint (%s.%s) violated - child record found"
+*Cause:    attempted to delete a parent key value that had a foreign
+           dependency.
+*Action:   delete dependencies first then parent or disable constraint.
+
+6. insert into TRANSACTION_DETAIL values('T009','N','A001',5000,'31-07-18');
+
+Error report -
+SQL Error: ORA-02290: check constraint (HR.CHK1019) violated
+02290. 00000 -  "check constraint (%s.%s) violated"
+*Cause:    The values being inserted do not satisfy the named check
+           
+*Action:   do not insert values that violate the constraint.
+
+7. create table account_details_backup as select * from ACCOUNT_DETAIL;
+
+8. delete from TRANSACTION_DETAIL
+   where AMOUNT=(select min(amount) from TRANSACTION_DETAIL);
+
+9. commit;
+   update ACCOUNT_DETAIL
+   set DEPOSIT_AMOUNT=1000
+   where DEPOSIT_AMOUNT<(select avg(deposit_amount) from ACCOUNT_DETAIL);
+
+10. rollback when  (sum(deposit_amount)>100000);
+
+11. select e.employee_id,e.first_name,e.last_name,e2.first_name,e2.employee_id from employees e,employees e2 
+where e2.employee_id in (select manager_id from departments d where d.manager_id=e.manager_id);
+
+12. select emp_id ,emp_name from emp where emp_rating<(select avg(rating) from emp);
+
+13. select emp_name from emp where dept_id in(select dept_id from department where project 
+   in(select project from department where dept_id in(select dept_id from emp where emp_name='Tom')));
+
+15. create table course(c_id number primary key, c_name varchar2(30) not null,subject varchar2(20),marks number check(marks<25));
+    create table course_admin(a_id number primary key,a_name varchar2(20),c_id number references course(c_id),studying varchar2(40));
+   insert into course values(110,'foundation','sql',25);
+   insert into course_admin(1,'Rajiv',110,'computer design');
+   select c1.c_id,c1.c_name c2.a_name from course c1,course_admin c2 where c_id=(select c_id from course_admin c where c.c_id=c1.c_id );
+
+16. select * from student_table where subject in(select subject from course where c_id=(select c_id from course_admin where studying='Database')); 
+
+17. select name from student_table where id in(select id from marks_table where total_marks <(select avg(total_marks) from marks_table));
+
+14.select first_name,employee_id  FROM employees where DEPARTMENT_ID in (select DEPARTMENT_ID from departments
+   where location_id in (select location_id from DEPARTMENTS where DEPARTMENT_NAME='IT')) ;
+
+18.select department_name from DEPARTMENTS where DEPARTMENT_ID in (select department_id from employees 
+  GROUP BY department_id having department_id is not null and count(employee_id)>3);
+
+19.update employees e
+   set e.salary=e.salary + 2000
+   where e.salary<(select avg(salary) from employees where department_id=e.department_id);
+
+20. select a1.branch_id,(select count(account_id) from account_detail a2 where a1.branch_id= a2.branch_id)
+   from account_detail a1
+   group by a1.branch_id having count(a1.customer_id)>=2;
+
+21. select c.customer_id,c.customer_name from customer_detail c 
+   where 1<=(select count(a.customer_id) from account_detail a where a.customer_id=c.CUSTOMER_ID);
+
+22.create table account_detail_new as select * from ACCOUNT_DETAIL where 1=2;
+
+23. create table student_table(id number,name VARCHAR2(20),city varchar2(20) check(city in('Delhi','Noida','Gurgaon')),
+   course varchar2(20) default 'Foundation', registration_date date default sysdate, primary key(id));
+
+24. desc customer_detail;
+
+25. create table transaction_detail2 as select transaction_id,transaction_type from TRANSACTION_DETAIL;
+
+26.alter table customer_detail 
+   modify customer_name varchar2(50);
+
+27. alter table customer_detail 
+    add reference char(30);
+
+28.alter table customer_detail
+   drop column reference; 
+
+29. alter table customer_detail 
+   modify customer_name varchar2(20);
+
+30. alter table student_table
+   rename to student_test_table;
+
+31. insert into student_test_table values(101,'Rajiv','Noida','CS','31-07-18');
+    SELECT * FROM STUDENT_TEST_TABLE;
+    SAVEPOINT temp;
+    delete from STUDENT_TEST_TABLE;
+    SELECT * FROM STUDENT_TEST_TABLE;
+    rollback to SAVEPOINT temp;
+    SELECT * FROM STUDENT_TEST_TABLE;
+
+32. select constraint_name,constraint_type,search_condition from USER_CONSTRAINTS where table_name='ACCOUNT_DETAIL';
+
+33. alter table account_detail 
+   DISABLE CONSTRAINT sys_c007002 cascade;
+   alter table account_detail 
+   DISABLE CONSTRAINT schk10019 cascade;
+   alter table account_detail 
+   DISABLE CONSTRAINT sys_c007000 cascade;
+   alter table account_detail 
+   DISABLE CONSTRAINT sys_c007001 cascade;
+
+34. alter table account_detail 
+  enable CONSTRAINT sys_c007002 ;
+  alter table account_detail 
+  enable CONSTRAINT chk10019 ;
+  alter table account_detail 
+  enable CONSTRAINT sys_c007000 ;
+  alter table account_detail 
+  enable CONSTRAINT sys_c007001 ;
+
+35. alter table account_detail_new
+   disable constraint customer_id;
