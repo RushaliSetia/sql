@@ -1,0 +1,209 @@
+answer 1:
+select first_name,hire_date,salary,4*salary  from employees;
+
+answer 2:
+select last_name,salary,12*salary,((12*salary)-((15*(12*salary))/100))from employees;
+
+answer 3:
+select first_name,hire_date,salary,4*salary as "quaterely salary"  from employees;
+
+answer 4:
+select last_name,salary,((12*salary)-((15*(12*salary))/100)) "Net Take Home Salary" from employees;
+
+answer 5:
+select 'employee' || first_name ||'was hired on' || hire_date || 'in' ||department_id || 'on Salary' || salary from employees;
+
+answer 6:
+select distinct(salary) from employees;
+
+answer 7:
+desc CUSTOMER_DETAIL;
+select customer_name from customer_detail where customer_address='khar';
+
+answer 8:
+select cd.customer_name,bd.branch_city,ad.deposit_amount 
+from customer_detail cd,bank_detail bd,account_detail ad 
+where cd.customer_id=ad.customer_id and ad.branch_id=bd.branch_id and ad.deposit_amount>5000;
+
+answer 9:
+select * from customer_detail;
+select customer_name from customer_detail where customer_name like 'S%';
+
+answer 10:
+select * from bank_detail where branch_city in('Pune','Delhi','Indore');
+
+answer 11:
+select branch_location from bank_detail where branch_city in('Pune','Delhi');
+
+answer 12:
+select * from transaction_detail;
+select * from transaction_detail  where (amount between 4000 and 8000) and transaction_type='D';
+
+answer 13:
+select customer_name from customer_detail order by customer_name desc;
+
+answer 14:
+select * from account_detail,customer_detail 
+
+answer 15:
+select * from account_detail order by deposit_amount, acc_open_date desc;
+
+answer 16:
+select customer_name from customer_detail where customer_name IN ('A%U%','S%U%'); 
+
+answer 17:
+select initcap(customer_name),upper(customer_address) from customer_detail;
+
+answer 18:
+select * from transaction_detail where (sysdate-transaction_date)<5;
+
+answer 19:
+select first_name,hire_date,trunc(sysdate-hire_date) as "Days",round(trunc(sysdate-hire_date))from employees;
+
+answer 20:
+select to_char(hire_date,'fmYear,Month,dd,day') from employees; 
+
+answer 21:
+select location_id,upper(substr(street_address,1,20))as "Street Address" from locations;
+
+answer 22:
+select first_name,rpad(lpad(salary,10,'*'),15,'*')as "Salary" from employees;
+
+answer 23:
+select first_name,salary,
+case 
+    when commission_pct is null then 'Employee Earned no commission' 
+    else to_char(commission_pct)
+end
+from employees;
+
+answer 24:
+select first_name,salary,commission_pct,nullif(commission_pct,.1)
+from employees;
+
+answer 25:
+select first_name,department_id,
+case department_id when 50 then 'HR Team' 
+    when 80 then 'Training Team'
+    else 'Deveopment Team' 
+end 
+"result" from employees;
+
+answer 26:
+select first_name,
+decode(department_id, 50,'HR Team',
+                      80,'Training Team',
+                          'Development Team') as "Department"
+from employees;
+
+
+answer 27:
+select cd.customer_name,bd.branch_location,ad.account_type,ad.deposit_amount 
+from customer_detail cd,bank_detail bd,account_detail ad 
+where cd.customer_id=ad.customer_id and ad.branch_id=bd.branch_id and ad.deposit_amount>5000;
+
+
+answer 28:
+select c.customer_id,c.customer_name,a.account_id 
+from customer_detail c,account_detail a 
+where a.customer_id=c.customer_id(+);
+
+answer 29:
+select e.employee_id,e.first_name,e.salary,m.salary,m.salary-e.salary as"salary difference" 
+from employees e,employees m 
+where m.manager_id=e.employee_id;
+
+answer 30:
+select e.employee_id,e.first_name,e.salary,d.department_name,l.city,l.postal_code 
+from locations l,departments d,employees e 
+where e.department_id=d.department_id and e.salary>5000;
+
+answer 31:
+select count(a.customer_id) from account_detail a 
+where a.acc_open_date between '01/01/2004' and '31/12/2004'; 
+
+answer 32:
+select c.customer_name from customer_detail c,account_detail a 
+group by a.customer_id 
+having c.customer_id=a.customer_id;
+
+answer 33:
+select customer_id,count(customer_id) 
+from account_detail group by customer_id;
+
+answer 34:
+select distinct c.customer_name,c.customer_address from customer_detail c,account_detail a 
+where c.customer_id not in(select a1.customer_id from account_detail a1);
+
+answer 35:
+select  cd.customer_name,td.transaction_type,count(td.transaction_id)
+from customer_detail cd,transaction_detail td,account_detail ad
+where cd.customer_id=ad.customer_id and
+ad.account_id=td.account_id
+group by cd.customer_name,td.transaction_type;
+
+answer 36:
+select ct.customer_name, count(*)as countoftrans
+from account_detail att,customer_detail ct,transaction_detail t
+where att.account_id=t.account_id and ct.customer_id=att.customer_id
+group by ct.customer_name,t.account_id
+having count(*)=(select max(count(*)) from transaction_detail group by account_id);
+
+answer 37:
+select customer_id,account_id 
+from account_detail 
+group by customer_id,account_id 
+order by customer_id;
+
+answer 38:
+select customer_id from account_detail
+where branch_id in (select branch_id
+from account_detail
+group by branch_id
+having count(branch_id)>=2);
+
+answer 39:
+select * from transaction_detail 
+where amount > (select avg(amount) from transaction_detail); 
+
+
+answer 40:
+select distinct a.account_id from transaction_detail a,account_detail t 
+where t.deposit_amount > (select min(amount)from transaction_detail);
+
+answer 41:
+select max(td.amount) from transaction_detail td 
+group by td.account_id;
+
+answer 42:
+select distinct cd.customer_name,bd.branch_location,bd.branch_city
+from customer_detail cd,bank_detail bd,account_detail ad 
+where bd.branch_id in (select distinct bd1.branch_id from account_detail ad2,bank_detail bd1,customer_detail cd1 where ad2.customer_id='C001') and ad.deposit_amount=(select distinct ad1.deposit_amount from account_detail ad1 where ad1.customer_id='C003');
+
+answer 43:
+select customer_name from customer_detail 
+where customer_id in ( select distinct customer_id from account_detail where to_char(acc_open_date,'yy')in(select to_char(acc_open_date,'yy') 
+from account_detail where customer_id='C002'));
+
+answer 44:
+select * from transaction_detail 
+where transaction_type=(select transaction_type from transaction_detail where account_id='A004');
+
+answer 45:
+select branch_location,branch_city from bank_detail 
+where branch_id in(select branch_id from account_detail where customer_id='C001');
+
+answer 46:
+select account_id,deposit_amount from account_detail 
+where account_id in(select account_id from transaction_detail where amount < (select amount from transaction_detail where account_id='A005'));
+
+answer 47:
+select * from account_detail 
+where deposit_amount>(select avg(deposit_amount) from account_detail);
+
+answer 48:
+select * from transaction_detail 
+where amount> (select max(amount) from transaction_detail where transaction_type='D');
+
+
+
