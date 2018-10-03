@@ -1,0 +1,87 @@
+answer 1:
+create index cus_address_idx
+on customer_detail(customer_address);
+
+answer 2:
+create view Customer_VW 
+as select c.customer_id,c.customer_name,a.account_id,b.branch_location
+from customer_detail c,account_detail a,bank_detail b 
+where a.customer_id=c.customer_id and b.branch_id=a.branch_id;
+
+answer 3:
+insert into bank_detail 
+values('B006','SECTOR-61','NOIDA');
+
+insert into customer_detail 
+values('C006','Rushali','Delhi');
+
+select * from Customer_VW;
+
+C001	Ram Kumar Sharma	A001	Sector 60
+C002	Dinesh Sharma	A002	Saket
+C003	Ashwani Kumar Gupta	A003	Faridabad
+C002	Dinesh Sharma	A004	Kolaba
+C001	Ram Kumar Sharma	A005	Kolaba
+
+answer 4:
+insert into Customer_VW 
+values('C008','Mohit','A006','Sector-62');
+
+Error starting at line : 21 in command -
+insert into Customer_VW  
+values('C008','Mohit','A006','Sector-62') 
+
+Error report -
+SQL Error: ORA-01779: cannot modify a column which maps to a non key-preserved table
+01779. 00000 -  "cannot modify a column which maps to a non key-preserved table"
+*Cause:    An attempt was made to insert or update columns of a join view which
+           map to a non-key-preserved table.
+*Action:   Modify the underlying base tables directly.
+
+answer 5:
+create view Trans_Acc_Cus_Bank
+as select t.amount,a.deposit_amount,c.customer_name,c.customer_address,b.branch_location,b.branch_city
+from transaction_detail t,account_detail a,customer_detail c,bank_detail b 
+where a.customer_id=c.customer_id and t.account_id=a.account_id and a.branch_id=b.bRANCH_id 
+WITH READ ONLY;
+
+select * from Trans_Acc_Cus_Bank;
+insert into Trans_Acc_Cus_Bank 
+values(785000,6000,'MOHIT KUMAR','noida','saket','Delhi');
+
+Error report -
+SQL Error: ORA-42399: cannot perform a DML operation on a read-only view
+
+answer 6:
+answer 6:
+create SEQUENCE Transaction_seq 
+                INCREMENT BY 1
+                START WITH 10
+                MAXVALUE 999999;
+
+answer 7:
+drop SEQUENCE Transaction_seq;
+
+answer 8:
+create SEQUENCE Cust_seq 
+INCREMENT BY 1
+START WITH 8
+MAXVALUE 100
+NOCYCLE;
+
+answer 9:
+create SEQUENCE Cust_seq1 
+INCREMENT BY 1
+START WITH 101
+MAXVALUE 200
+NOCYCLE;
+
+answer 10:
+drop SEQUENCE Cust_seq;
+drop SEQUENCE Cust_seq1;
+
+answer 11:
+create SYNONYM TACB 
+FOR Trans_ACC_Cus_Bank;
+
+
